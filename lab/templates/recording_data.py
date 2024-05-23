@@ -7,6 +7,7 @@ def record_data(inlet, filepath: str, n_window: int):
             # Pull data from device
             # Write (new) data to file
             # Update visualization (with data in buffer)
+            pass
 
     except KeyboardInterrupt:
         print('Closing!')
@@ -18,6 +19,7 @@ def visualize_stream(inlet, n_buffer: int, n_window: int):
             # Pull data from device
             # Update buffer
             # Update visualization (with data in buffer)
+            pass
 
     except KeyboardInterrupt:
         print('Closing!')

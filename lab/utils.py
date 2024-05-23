@@ -29,12 +29,11 @@ def connect_stream():
 def setup_stream(address: str = None):
     muses = list_muses()
 
-    if muses:
-        if address is None:
-            address = muses[0]['address']
-            
-        process = Process(target=stream, args=(address,))
-        process.start()
+    for muse in muses:
+        if muse['name'] == 'MuseS-8FDB':
+            process = Process(target=stream, args=(muse['address'],))
+            process.start()
+            break
     else:
         raise ConnectionError('No Muses found')
 

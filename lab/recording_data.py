@@ -68,7 +68,7 @@ def visualize_stream(inlet, n_buffer: int, n_window: int):
 
 
 if __name__ == "__main__":
-    # filepath = "eeg_rec.csv"
+    filepath = "eeg_rec.csv"
     setup_stream()
     inlet, _ = connect_stream()
 
@@ -77,5 +77,5 @@ if __name__ == "__main__":
     n_buffer = int(BUFFER_LENGTH * sample_freq)
     n_window = int(WINDOW_LENGTH * sample_freq)
 
-    # record_data(inlet, filepath, n_buffer, n_window)
+    record_data(inlet, filepath, n_buffer, n_window)
     visualize_stream(inlet, n_buffer, n_window)
