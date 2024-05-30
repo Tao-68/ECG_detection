@@ -5,6 +5,37 @@ from pylsl import StreamInlet, resolve_byprop
 from muselsl import stream, list_muses
 import tensorflow as tf
 
+def add_labels(filepath_rec: str = "eeg_rec.csv", filepath_labels: str = "labels.csv"):
+    # load labels into array of tupels
+    labels = []
+    with open(filepath_labels, 'r') as f:
+        for line in f:
+            labels.append(line.strip().split(','))
+    lines_of_blink = []
+    for blink in labels:
+        start, end = blink
+        start = int(start)
+        end = int(end)
+        lines_of_blink.extend(list(range(start, end)))
+    # load eeg data
+    data = []
+    with open(filepath_rec, 'r') as f:
+        for line in f:
+            data.append(line.strip().split(','))
+    # append labels to eeg data
+    for i, line in enumerate(data):
+        if i in lines_of_blink:
+            data[i].append(1)
+        else:
+            data[i].append(0)
+    # save data
+    filepath_rec_labeled = filepath_rec.split('.')[0]
+    filepath_rec_labeled += "_labeled.csv"
+    with open(filepath_rec_labeled, 'w') as f:
+        for line in data:
+            line = [str(x) for x in line]
+            f.write(','.join(line) + '\n')
+
 
 def connect_stream():
     print('Looking for an EEG stream...')
@@ -76,3 +107,7 @@ def setup_eegnet(n_channels: int = 4, window_length: int = 128):
                   metrics=['accuracy'])
 
     return model
+
+
+if __name__ == '__main__':
+    add_labels()
