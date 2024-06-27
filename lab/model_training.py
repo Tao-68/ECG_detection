@@ -42,14 +42,14 @@ def get_dataset(filepath, window_length: int = 128):
 
 if __name__ == '__main__':
     # 0. Load model
+    model_filepath = "eegnet_model"
     load_model = True
     if load_model:
         model = tf.keras.models.load_model("eegnet_model")
 
     # 1. Load data
-
     filepath = "eeg_rec_labeled.csv"
-    model_filepath = "eegnet_model"
+
     train_ds, test_ds = get_dataset(filepath)
     # 2. Setup and train model
     if not load_model:
@@ -62,20 +62,26 @@ if __name__ == '__main__':
     for x, y in test_ds:
         y_true.append(y)
         y_pred.append(model.predict(x))
-    for y_t, y_p in zip(y_true, y_pred):
-        cm = confusion_matrix(y_t, y_p)
-        print(cm)
+
+    y_true = tf.concat(y_true, axis=0)
+    y_pred = tf.concat(y_pred, axis=0)
+    y_true = tf.argmax(y_true, axis=1)
+    y_pred = tf.argmax(y_pred, axis=1)
+
+    cm = confusion_matrix(y_true, y_pred)
+    print(cm)
 
     # save model
-    model.save(model_filepath, save_format='tf')
+    if not load_model:
+        model.save(model_filepath, save_format='tf')
 
     # plot the loss and rmse
-    for metric, result in history.history.items():
-        if 'loss' in metric:
-            result = tf.sqrt(result)
-        plt.plot(result, label=metric.replace('loss', 'rmse'))
-    plt.legend()
-    plt.show()
+        for metric, result in history.history.items():
+            if 'loss' in metric:
+                result = tf.sqrt(result)
+            plt.plot(result, label=metric.replace('loss', 'rmse'))
+        plt.legend()
+        plt.show()
 
 
 

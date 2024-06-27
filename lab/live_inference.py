@@ -28,8 +28,13 @@ def prediction_stream(inlet,
                 eeg_window = eeg_buffer[-window_length:]
                 eeg_window = np.expand_dims(eeg_window, axis=0)
                 prediction = model.predict(eeg_window, verbose=0)
-                # live plot of prediction
-                
+                threshold = 0.5
+                if prediction[0][1] > threshold:
+                    print("Prediction: 1")
+                else:
+                    print("Prediction: 0")
+
+
 
 
     except KeyboardInterrupt:
